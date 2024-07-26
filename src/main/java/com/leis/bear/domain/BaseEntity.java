@@ -16,4 +16,5 @@ public class BaseEntity {
     private String updateUser;
     // @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
+
 }

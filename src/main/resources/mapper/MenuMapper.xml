@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leis.bear.mapper.MenuMapper">
+    <resultMap id="BaseResultMap" type="com.leis.bear.domain.Menu">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="path" jdbcType="VARCHAR" property="path"/>
+        <result column="component" jdbcType="VARCHAR" property="component"/>
+        <result column="perms" jdbcType="VARCHAR" property="perms"/>
+        <result column="icon" jdbcType="VARCHAR" property="icon"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="order_num" jdbcType="INTEGER" property="orderNum"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from t_menu
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.leis.bear.domain.Menu">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_menu (id, menu_name, parent_id,
+        path, component, perms,
+        icon, type, order_num,
+        create_time, create_user, update_time,
+        update_user)
+        values (#{id,jdbcType=INTEGER}, #{menuName,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER},
+        #{path,jdbcType=VARCHAR}, #{component,jdbcType=VARCHAR}, #{perms,jdbcType=VARCHAR},
+        #{icon,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{orderNum,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+        #{updateUser,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.leis.bear.domain.Menu">
+        update t_menu
+        set menu_name   = #{menuName,jdbcType=VARCHAR},
+            parent_id   = #{parentId,jdbcType=INTEGER},
+            path        = #{path,jdbcType=VARCHAR},
+            component   = #{component,jdbcType=VARCHAR},
+            perms       = #{perms,jdbcType=VARCHAR},
+            icon        = #{icon,jdbcType=VARCHAR},
+            type        = #{type,jdbcType=TINYINT},
+            order_num   = #{orderNum,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            create_user = #{createUser,jdbcType=VARCHAR},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            update_user = #{updateUser,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select id,
+               menu_name,
+               parent_id,
+               path,
+               component,
+               perms,
+               icon,
+               type,
+               order_num,
+               create_time,
+               create_user,
+               update_time,
+               update_user
+        from t_menu
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id,
+               menu_name,
+               parent_id,
+               path,
+               component,
+               perms,
+               icon,
+               type,
+               order_num,
+               create_time,
+               create_user,
+               update_time,
+               update_user
+        from t_menu
+    </select>
+    <select id="selectByUserId" resultType="com.leis.bear.domain.Menu">
+        SELECT tm.*
+        FROM t_menu tm
+                 LEFT JOIN (SELECT DISTINCT trm.menu_id
+                            FROM t_role_menu trm
+                                     JOIN t_user_role tur ON trm.role_id = tur.role_id
+                            WHERE tur.user_id = #{userId}) AS user_menus ON tm.id = user_menus.menu_id
+    </select>
+</mapper>

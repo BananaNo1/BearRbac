@@ -1,12 +1,113 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.leis.bear.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.leis.bear.domain.User">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="phone" jdbcType="INTEGER" property="phone"/>
+        <result column="icon" jdbcType="VARCHAR" property="icon"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="dept" jdbcType="VARCHAR" property="dept"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="ssex" jdbcType="TINYINT" property="ssex"/>
+        <result column="user_type" jdbcType="VARCHAR" property="userType"/>
+        <result column="del_flag" jdbcType="TINYINT" property="delFlag"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from t_user
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.leis.bear.domain.User">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_user (id, username, phone,
+        icon, password, email,
+        dept, status, ssex,
+        user_type, del_flag, create_time,
+        create_user, update_time, update_user,
+        remark)
+        values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{phone,jdbcType=INTEGER},
+        #{icon,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+        #{dept,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{ssex,jdbcType=TINYINT},
+        #{userType,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP},
+        #{createUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.leis.bear.domain.User">
+        update t_user
+        set username    = #{username,jdbcType=VARCHAR},
+            phone       = #{phone,jdbcType=INTEGER},
+            icon        = #{icon,jdbcType=VARCHAR},
+            password    = #{password,jdbcType=VARCHAR},
+            email       = #{email,jdbcType=VARCHAR},
+            dept        = #{dept,jdbcType=VARCHAR},
+            status      = #{status,jdbcType=TINYINT},
+            ssex        = #{ssex,jdbcType=TINYINT},
+            user_type   = #{userType,jdbcType=VARCHAR},
+            del_flag    = #{delFlag,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            create_user = #{createUser,jdbcType=VARCHAR},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            update_user = #{updateUser,jdbcType=VARCHAR},
+            remark      = #{remark,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select id,
+               username,
+               phone,
+               icon,
+               password,
+               email,
+               dept,
+               status,
+               ssex,
+               user_type,
+               del_flag,
+               create_time,
+               create_user,
+               update_time,
+               update_user,
+               remark
+        from t_user
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id,
+               username,
+               phone,
+               icon,
+               password,
+               email,
+               dept,
+               status,
+               ssex,
+               user_type,
+               del_flag,
+               create_time,
+               create_user,
+               update_time,
+               update_user,
+               remark
+        from t_user
+    </select>
 
 
     <select id="selectUserList" resultType="com.leis.bear.domain.User">
         select *
         from t_user
+    </select>
+    <select id="selectAllByUsernameUser" resultType="com.leis.bear.domain.User">
+        select *
+        from t_user
+        where username = #{username}
     </select>
 </mapper>

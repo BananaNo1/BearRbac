@@ -2,19 +2,35 @@ package com.leis.bear.domain;
 
 import lombok.Data;
 
-@Data
-public class User {
+import java.io.Serializable;
+import java.util.Date;
 
+@Data
+public class User extends BaseEntity implements Serializable {
     private Integer id;
+
     private String username;
-    private String nickname;
-    private String phone;
+
+    private Integer phone;
+
     private String icon;
+
     private String password;
+
     private String email;
+
     private String dept;
-    private Integer status;
-    private Integer sex;
-    private Integer delFlag;
+
+    private Byte status;
+
+    private Byte ssex;
+
+    private String userType;
+
+    private Byte delFlag;
+
+    private String remark;
+
+    private static final long serialVersionUID = 1L;
 
 }
