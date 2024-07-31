@@ -1,8 +1,9 @@
 package com.leis.bear.interceptor;
 
 import cn.hutool.core.util.StrUtil;
-import com.leis.bear.annonations.NeedLogin;
-import com.leis.bear.utils.JwtUtil;
+import com.leis.bear.annonations.NeedPermissions;
+import com.leis.bear.domain.Menu;
+import com.leis.bear.service.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -12,38 +13,39 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-@Slf4j
 @Component
-public class LoginInterceptor implements HandlerInterceptor {
+@Slf4j
+public class PermissionInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private IUserService userService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("*************进入拦截器*****************");
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
-            NeedLogin methodAnnotation = handlerMethod.getMethodAnnotation(NeedLogin.class);
+            NeedPermissions methodAnnotation = handlerMethod.getMethodAnnotation(NeedPermissions.class);
             if (methodAnnotation == null) {
                 return true;
             }
-            String token = request.getHeader("token");
-            if (StrUtil.isBlank(token)) {
-                setResponseData(response, "token不存在");
-                return false;
+            String permission = methodAnnotation.permission();
+            if (StrUtil.isBlank(permission)) {
+                return true;
             }
-            try {
-                Long userId = jwtUtil.parseToken(token);
-                log.info("*************userId:::" + userId);
-            } catch (Exception e) {
-                setResponseData(response, "非法token");
-                return false;
+            List<Menu> menus = userService.selectMenuByUserId(1);
+            Set<String> collect = menus.stream().map(Menu::getPerms).collect(Collectors.toSet());
+            log.info("请求需要的权限:{}", permission);
+            if (collect.contains(permission)) {
+                return true;
             }
-            return true;
+            setResponseData(response, "权限不足");
+            return false;
         }
-        return true;
+        return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
     private void setResponseData(HttpServletResponse response, String message) throws IOException {

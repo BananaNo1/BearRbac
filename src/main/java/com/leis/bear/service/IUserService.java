@@ -1,5 +1,6 @@
 package com.leis.bear.service;
 
+import com.leis.bear.domain.Menu;
 import com.leis.bear.domain.User;
 import com.leis.bear.domain.vo.UserLoginVo;
 
@@ -13,4 +14,6 @@ public interface IUserService {
     boolean registerUser(User user);
 
     UserLoginVo loginUser(User user);
+
+    List<Menu> selectMenuByUserId(Integer userId);
 }

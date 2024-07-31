@@ -4,10 +4,12 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
+import com.leis.bear.domain.Menu;
 import com.leis.bear.domain.User;
 import com.leis.bear.domain.vo.UserLoginVo;
 import com.leis.bear.exception.BadRequestException;
 import com.leis.bear.exception.UnAuthorizedException;
+import com.leis.bear.mapper.MenuMapper;
 import com.leis.bear.mapper.UserMapper;
 import com.leis.bear.service.IUserService;
 import com.leis.bear.utils.JwtUtil;
@@ -22,6 +24,9 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private MenuMapper menuMapper;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -61,5 +66,10 @@ public class UserServiceImpl implements IUserService {
         String token = jwtUtil.createToken(usernameUser.getId(), Duration.ofMinutes(10));
         userLoginVo.setToken(token);
         return userLoginVo;
+    }
+
+    @Override
+    public List<Menu> selectMenuByUserId(Integer userId) {
+        return menuMapper.selectByUserId(userId);
     }
 }

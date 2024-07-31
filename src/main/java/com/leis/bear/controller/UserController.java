@@ -1,6 +1,8 @@
 package com.leis.bear.controller;
 
 
+import com.leis.bear.annonations.NeedLogin;
+import com.leis.bear.annonations.NeedPermissions;
 import com.leis.bear.domain.User;
 import com.leis.bear.domain.vo.UserLoginVo;
 import com.leis.bear.service.IUserService;
@@ -23,6 +25,8 @@ public class UserController {
 
     @Operation(summary = "用户列表")
     @GetMapping("/list")
+    @NeedLogin
+    @NeedPermissions(permission = "user:add")
     public List<User> selectUserList() {
         return userService.selectUserList();
     }
@@ -35,9 +39,9 @@ public class UserController {
 
     @Operation(summary = "登录")
     @PostMapping("/login")
-    public Boolean loginUser(@RequestBody User user) {
+    public UserLoginVo loginUser(@RequestBody User user) {
         UserLoginVo userLoginVo = userService.loginUser(user);
         log.info(userLoginVo.toString());
-        return true;
+        return userLoginVo;
     }
 }
