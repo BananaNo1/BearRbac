@@ -8,9 +8,11 @@ import cn.hutool.jwt.signers.JWTSigner;
 import cn.hutool.jwt.signers.JWTSignerUtil;
 import com.leis.bear.exception.UnAuthorizedException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class JwtUtil {
@@ -30,7 +32,6 @@ public class JwtUtil {
      * @return
      */
     public String createToken(Long userId, Duration ttl) {
-
         return JWT.create()
                 .setPayload("user", userId)
                 .setExpiresAt(new Date(System.currentTimeMillis() + ttl.toMillis()))
@@ -65,7 +66,7 @@ public class JwtUtil {
         }
         try {
             return Long.valueOf(userPayload.toString());
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new UnAuthorizedException("无效的token");
         }
     }
